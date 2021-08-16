@@ -22,7 +22,7 @@ string generateExpression(int cnt) {
     else  return to_string(rand(0,2));
 
  }
-//keep in mind before you test to delete the cin>>t and cout<<"Case"... stuff in the main file otherwise you will get an error
+//keep in mind before you test to delete the cin>>t, for int tc loop and cout<<"Case"... stuff in the main file otherwise you will get an error
 //Max
 int main(int argc, char* argv[]) {
 
