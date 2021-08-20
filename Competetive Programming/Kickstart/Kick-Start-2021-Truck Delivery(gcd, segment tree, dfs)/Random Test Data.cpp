@@ -41,7 +41,7 @@ int main(int argc, char* argv[]) {
        n = 1000;
        q = 1000;
        out.clear();
-
+loadlimits.clear();
 
        generateTree(-1, false);
        cout << newIndex << " " << q << endl;
