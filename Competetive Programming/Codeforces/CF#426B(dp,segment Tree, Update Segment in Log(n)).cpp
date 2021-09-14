@@ -149,7 +149,7 @@ int main()
             index = 0;
             constructSTUtil(0, n - 1, 0);
             
-            for (int i = 0; i < n; i++) {
+            for (int i = cnt; i < n; i++) {
                
               
                
@@ -170,7 +170,7 @@ int main()
 
                 
                 if (LastOcurrence[arr[i] - 1] == i)
-                    Indexing[arr[i] - 1] = -1;
+                    Indexing[arr[i] - 1] = cnt;
                 else
                     Indexing[arr[i] - 1] = i;
                    
