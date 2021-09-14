@@ -4,7 +4,7 @@
 typedef long long ll;
 using namespace std;
 //Author: Max Paris
-//Problem Link: https://codeforces.com/blog/entry/53567
+//Problem Link: https://codeforces.com/contest/833/problem/B
 //O(k*n*log(n))
 int n, k;
 vector<int>arr;
