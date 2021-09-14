@@ -10,14 +10,12 @@ int n, k;
 vector<int>heights;
 vector<int> beauty;
 vector<vector<int>> dp2;
-ll ans;
-ll value;
-int index = 0;
-vector<int> lazyUpdate;
+
+
 vector<ll> SegmentTree1;
 vector<ll> SegmentTree2;
 
-int cnt = 1;
+
 int getMiddle(int l, int r) {
 
     return l + (r - l) / 2;
