@@ -159,7 +159,7 @@ int main()
     // modify elements at 2nd ans 3rd index
     tree.update_Range(2, 3,300);
 
-    // print the sum in range(1,5) index-based
+    // print the min in range(1,5) index-based
     cout << tree.query(1, 5) << endl;
 
     return 0;
