@@ -52,9 +52,10 @@ struct BottomUpSegmentTree {
             tree[i >> 1] = merge(tree[i],tree[i ^ 1]);
     }
 
-    // function to get merge value on interval [l, r)
+    // function to get merge value on interval [l, r]
     T query(int l, int r)
     {
+        r++;
         T res = defaultValue;
 
         // loop to find the merge value in the range
@@ -93,7 +94,7 @@ int main()
     tree.updateTreeNode(2, 1);
 
     // print the sum in range(0,3) index-based
-    cout << tree.query(0, 4) << endl;
+    cout << tree.query(0, 3) << endl;
 
     return 0;
 }
