@@ -9,25 +9,21 @@ struct BottomUpSegmentTree {
      vector<T> tree;
      //merge function
      T(*merge)(T, T);
+     // default Value
+     T defaultValue;
+    
 
-     //construct basic segment tree
-     BottomUpSegmentTree(int n, T(*merge)(T, T)) {
-         this->n = n;
-         this->N = 2 * n;
-         this->merge = merge;
-         tree = vector<T>(N);
-     }
-
-     //construct segment tree with specific default value
+     //construct segment tree with specific default value and merge function
      BottomUpSegmentTree(int n, T defaultValue, T(*merge)(T, T)) {
          this->n = n;
          this->N = 2 * n;
          this->merge = merge;
+         this->defaultValue = defaultValue;
          tree = vector<T>(N, defaultValue);
      }
 
      //construct segment tree with specific array
-     BottomUpSegmentTree(vector<T>& arr, T(*merge)(T, T)): BottomUpSegmentTree(arr.size(), merge) {
+     BottomUpSegmentTree(vector<T>& arr,T defaultValue, T(*merge)(T, T)): BottomUpSegmentTree(arr.size(), defaultValue, merge) {
          build(arr);
      }
     
@@ -59,7 +55,7 @@ struct BottomUpSegmentTree {
     // function to get merge value on interval [l, r)
     T query(int l, int r)
     {
-        T res = 0;
+        T res = defaultValue;
 
         // loop to find the merge value in the range
         for (l += n, r += n; l < r; l >>= 1, r >>= 1)
@@ -85,7 +81,7 @@ int merge(int x1,int x2) {
 int main()
 {
     vector<int> a = { 1, 2, 3, 4, 5, 6, 7, 8};
-    BottomUpSegmentTree<int> tree(a,merge);
+    BottomUpSegmentTree<int> tree(a,0,merge);
    
 
    
