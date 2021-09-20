@@ -88,7 +88,7 @@ int main()
    
 
     // print the sum in range(0,3) index-based
-    cout << tree.query(0, 4) << endl;
+    cout << tree.query(0, 3) << endl;
 
     // modify element at 2nd index
     tree.updateTreeNode(2, 1);
