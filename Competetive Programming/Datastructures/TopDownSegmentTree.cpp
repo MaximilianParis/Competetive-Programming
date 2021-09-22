@@ -16,7 +16,8 @@ struct TopDownSegmentTree {
     //construct segment tree with specific default value and merge function
     TopDownSegmentTree(int n, T defaultValue, T(*merge)(T, T)) {
         this->n = n;
-        this->N = 2 * n - 1;
+        int pow = ceil(log2(n));
+        this->N = (2 << (pow)) - 1;
         this->merge = merge;
         this->defaultValue = defaultValue;
         tree = vector<T>(N, defaultValue);
