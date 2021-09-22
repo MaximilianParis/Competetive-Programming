@@ -2,7 +2,7 @@
 using namespace std;
 typedef long long ll;
 
-template<typename T>
+
 
 template<typename T>
 struct TopDownSegmentTree {
