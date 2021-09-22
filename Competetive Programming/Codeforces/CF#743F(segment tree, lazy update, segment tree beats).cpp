@@ -5,7 +5,7 @@ typedef long long ll;
 using namespace std;
 //Author: Max Paris
 //Problem Link: https://codeforces.com/contest/1572/problem/F
-//O((n+q)*log(n))
+//O((n+q)*log(n)*log(n))
 int n, k,q;
 
 ll ans;
