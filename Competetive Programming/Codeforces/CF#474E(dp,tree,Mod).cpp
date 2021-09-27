@@ -57,7 +57,7 @@ void dfs(int i, int parent = -1) {
 
 int main()
 {
-    ans = 0;
+    
     ans = 0;
     scanf("%d", &n);
     V_values= vector<int>(n);
