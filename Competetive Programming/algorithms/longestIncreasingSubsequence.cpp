@@ -2,7 +2,8 @@
 
 #include <bits/stdc++.h> 
 using namespace std;
-
+//Author: Max Paris
+//O(n*log(n))
 
 template<typename T>
 struct BottomUpSegmentTree {
