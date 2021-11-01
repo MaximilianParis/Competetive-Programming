@@ -68,7 +68,7 @@ void multiply(const vector<int>& a, const vector<int>& b, vector<int>& res)
 
 int main() {
 
-	// sample input for testing
+	
 	int n, m;
 	cin >> n;
 	vector<int> fx(n);
