@@ -143,9 +143,13 @@ struct TopDownSegmentTree {
 ll merge(ll x1, ll x2) {
     return min(x1 ,x2);
 }
-
-ll add(ll x1, ll x2,int l,int r) {
+//sum
+ll add1(ll x1, ll x2,int l,int r) {
     return x1 + (r-l+1)*x2;
+}
+//Min/Max
+ll add(ll x1, ll x2,int l,int r) {
+    return x1 + x2;
 }
 
 
