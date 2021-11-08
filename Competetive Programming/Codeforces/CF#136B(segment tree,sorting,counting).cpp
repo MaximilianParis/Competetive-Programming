@@ -4,7 +4,7 @@ typedef long long ll;
 int n, m, q, k,t;
 string s;
 vector<int> arr;
-ll ans;
+
 //Author: Max Paris
 //Problem Link:https://codeforces.com/contest/220/problem/B
 //O((n+m)*log(n))
