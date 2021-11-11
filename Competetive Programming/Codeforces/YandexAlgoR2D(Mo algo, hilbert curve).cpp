@@ -32,7 +32,7 @@ ll get_answer() {
 
 
 
-inline int64_t gilbertOrder(int x, int y, int pow, int rotate) {
+inline ll gilbertOrder(int x, int y, int pow, int rotate) {
     if (pow == 0) {
         return 0;
     }
