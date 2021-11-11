@@ -55,7 +55,7 @@ inline int64_t gilbertOrder(int x, int y, int pow, int rotate) {
 
 struct Query {
     int l, r, idx;
-    int64_t ord;
+    ll ord;
 
     inline void calcOrder() {
         ord = gilbertOrder(l, r, 21, 0);
