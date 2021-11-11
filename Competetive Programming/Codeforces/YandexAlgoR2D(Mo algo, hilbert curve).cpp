@@ -121,7 +121,7 @@ int main()
         queries[i].ord= gilbertOrder(queries[i].l, queries[i].r, upperlogOfN, 0);
     }
 
-  
+   mo_s_algorithm(queries);
 
 
 }
