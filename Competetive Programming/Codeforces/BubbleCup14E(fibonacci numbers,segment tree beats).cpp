@@ -4,7 +4,7 @@ using namespace std;
 //Problem Link:https://codeforces.com/contest/1599/problem/E
 //O((n+q)*log(n)*log(n))
 typedef long long ll;
-typedef long long ld;
+
 int n, q;
 const int Mod = 1e9+7;
 const int Mod1 = 2.5e5;
