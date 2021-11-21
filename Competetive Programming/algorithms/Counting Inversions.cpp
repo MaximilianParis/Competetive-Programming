@@ -2,7 +2,7 @@
 #include<unordered_map>
 //Author: Max Paris
 
-//O(n) solution
+//O(n*maxbit) solution
 using namespace std;
 typedef long long ll;
 int n;
