@@ -1,9 +1,12 @@
 #include <bits/stdc++.h>
 using namespace std;
+//Athor:Max Paris
+//Problem Link:https://codeforces.com/contest/1599/problem/E
+//O((n+q)*log(n)*log(n))
 typedef long long ll;
 typedef long long ld;
 int n, q;
-const int Mod = 1e9 + 7;
+const int Mod = 1e9+7;
 const int Mod1 = 2.5e5;
 vector<int> A1;
 vector<int> A2;
@@ -51,8 +54,8 @@ struct TopDownSegmentTreeBeats {
         beat = vector<vector<vector<ll>>>(N, vector<vector< ll>>(2, vector<ll>(4)));
 
         lazyUpdate = vector<vector<ll>>(N, vector<ll>(2, defaultValue));
-        fibValues = vector<vector<pair<int, int>>>(N, vector<pair<int, int>>(9));
-      
+        fibValues = vector<vector<pair<int, int>>>(N, vector<pair<int, int>>(9, { -1,-1 }));
+
         fib();
         build(0, n - 1, 0);
     }
@@ -211,264 +214,513 @@ struct TopDownSegmentTreeBeats {
 
         int childindex1 = 2 * pos + 1;
         int childindex2 = childindex1 + 1;
-        beat[pos][0][0] = max(beat[childindex1][0][0], beat[childindex2][0][0]);
+        if (beat[childindex1][0][0] == beat[childindex2][0][0]) {
+            beat[pos][0][0] = beat[childindex1][0][0];
+            beat[pos][0][1] = max(beat[childindex1][0][1], beat[childindex2][0][1]);
+        }
+        else {
+            beat[pos][0][0] = max(beat[childindex1][0][0], beat[childindex2][0][0]);
+            beat[pos][0][1] = max(max(beat[childindex1][0][1], beat[childindex2][0][1]), min(beat[childindex1][0][0], beat[childindex2][0][0]));
+        }
 
-        long x1 = min(beat[childindex1][0][0], beat[childindex2][0][0]);
-        long x2 = max(beat[childindex1][0][1], beat[childindex2][0][1]);
-
-        beat[pos][0][1] = max(x1, x2);
-
-
-        beat[pos][1][0] = max(beat[childindex1][1][0], beat[childindex2][1][0]);
-
-        x1 = min(beat[childindex1][1][0], beat[childindex2][1][0]);
-        x2 = max(beat[childindex1][1][1], beat[childindex2][1][1]);
-
-        beat[pos][1][1] = max(x1, x2);
-
-
-        beat[pos][0][2] = min(beat[childindex1][0][2], beat[childindex2][0][2]);
-
-        x1 = max(beat[childindex1][0][2], beat[childindex2][0][2]);
-        x2 = min(beat[childindex1][0][3], beat[childindex2][0][3]);
+        if (beat[childindex1][1][0] == beat[childindex2][1][0]) {
+            beat[pos][1][0] = beat[childindex1][1][0];
+            beat[pos][1][1] = max(beat[childindex1][1][1], beat[childindex2][1][1]);
+        }
+        else {
+            beat[pos][1][0] = max(beat[childindex1][1][0], beat[childindex2][1][0]);
+            beat[pos][1][1] = max(max(beat[childindex1][1][1], beat[childindex2][1][1]), min(beat[childindex1][1][0], beat[childindex2][1][0]));
+        }
 
 
-        beat[pos][0][3] = min(x1, x2);
+        if (beat[childindex1][0][2] == beat[childindex2][0][2]) {
+            beat[pos][0][2] = beat[childindex1][0][2];
+            beat[pos][0][3] = min(beat[childindex1][0][3], beat[childindex2][0][3]);
+        }
+        else {
+            beat[pos][0][2] = min(beat[childindex1][0][2], beat[childindex2][0][2]);
+            beat[pos][0][3] = min(min(beat[childindex1][0][3], beat[childindex2][0][3]), max(beat[childindex1][0][2], beat[childindex2][0][2]));
+        }
+        if (beat[childindex1][1][2] == beat[childindex2][1][2]) {
+            beat[pos][1][2] = beat[childindex1][1][2];
+            beat[pos][1][3] = min(beat[childindex1][1][3], beat[childindex2][1][3]);
+        }
+        else {
+            beat[pos][1][2] = min(beat[childindex1][1][2], beat[childindex2][1][2]);
+            beat[pos][1][3] = min(min(beat[childindex1][1][3], beat[childindex2][1][3]), max(beat[childindex1][1][2], beat[childindex2][1][2]));
+        }
 
 
-        beat[pos][1][2] = min(beat[childindex1][1][2], beat[childindex2][1][2]);
-
-        x1 = max(beat[childindex1][1][2], beat[childindex2][1][2]);
-        x2 = min(beat[childindex1][1][3], beat[childindex2][1][3]);
-
-
-        beat[pos][1][3] = min(x1, x2);
         int childindex = childindex1;
         int curr = 0;
         int n1 = 0;
         int n2 = 0;
-        fill(fibValues[pos].begin(), fibValues[pos].end(), make_pair(0, 0));
-        if (fibValues[childindex][curr].second != 0) {
-            if (beat[pos][0][0] == beat[childindex][0][n1] && beat[pos][1][0] == beat[childindex][1][n2])
+        fill(fibValues[pos].begin(), fibValues[pos].end(), make_pair(-1, -1));
+        if (fibValues[childindex][curr].second != -1) {
+            if (beat[pos][0][0] == beat[childindex][0][n1] && beat[pos][1][0] == beat[childindex][1][n2]) {
+                if (fibValues[pos][0].first == -1)
+                    fibValues[pos][0] = { 0,0 };
                 fibValues[pos][0] = fibValues[pos][0] + fibValues[childindex][curr];
-            else if (beat[pos][0][2] == beat[childindex][0][n1] && beat[pos][1][0] == beat[childindex][1][n2])
+
+            }
+            else if (beat[pos][0][2] == beat[childindex][0][n1] && beat[pos][1][0] == beat[childindex][1][n2]) {
+                if (fibValues[pos][1].first == -1)
+                    fibValues[pos][1] = { 0,0 };
                 fibValues[pos][1] = fibValues[pos][1] + fibValues[childindex][curr];
-            else if (beat[pos][0][0] == beat[childindex][0][n1] && beat[pos][1][2] == beat[childindex][1][n2])
+            }
+            else if (beat[pos][0][0] == beat[childindex][0][n1] && beat[pos][1][2] == beat[childindex][1][n2]) {
+                if (fibValues[pos][2].first == -1)
+                    fibValues[pos][2] = { 0,0 };
                 fibValues[pos][2] = fibValues[pos][2] + fibValues[childindex][curr];
-            else if (beat[pos][0][2] == beat[childindex][0][n1] && beat[pos][1][2] == beat[childindex][1][n2])
+            }
+            else if (beat[pos][0][2] == beat[childindex][0][n1] && beat[pos][1][2] == beat[childindex][1][n2]) {
+                if (fibValues[pos][3].first == -1)
+                    fibValues[pos][3] = { 0,0 };
                 fibValues[pos][3] = fibValues[pos][3] + fibValues[childindex][curr];
-            else if (beat[pos][0][0] == beat[childindex][0][n1])
+            }
+            else if (beat[pos][0][0] == beat[childindex][0][n1]) {
+                if (fibValues[pos][4].first == -1)
+                    fibValues[pos][4] = { 0,0 };
                 fibValues[pos][4] = fibValues[pos][4] + fibValues[childindex][curr];
-            else if (beat[pos][0][2] == beat[childindex][0][n1])
+            }
+            else if (beat[pos][0][2] == beat[childindex][0][n1]) {
+                if (fibValues[pos][5].first == -1)
+                    fibValues[pos][5] = { 0,0 };
                 fibValues[pos][5] = fibValues[pos][5] + fibValues[childindex][curr];
-            else if (beat[pos][1][0] == beat[childindex][1][n2])
+            }
+            else if (beat[pos][1][0] == beat[childindex][1][n2]) {
+                if (fibValues[pos][6].first == -1)
+                    fibValues[pos][6] = { 0,0 };
                 fibValues[pos][6] = fibValues[pos][6] + fibValues[childindex][curr];
-            else if (beat[pos][1][2] == beat[childindex][1][n2])
+            }
+            else if (beat[pos][1][2] == beat[childindex][1][n2]) {
+                if (fibValues[pos][7].first == -1)
+                    fibValues[pos][7] = { 0,0 };
                 fibValues[pos][7] = fibValues[pos][7] + fibValues[childindex][curr];
-            else
+            }
+            else {
+                if (fibValues[pos][8].first == -1)
+                    fibValues[pos][8] = { 0,0 };
                 fibValues[pos][8] = fibValues[pos][8] + fibValues[childindex][curr];
+            }
         }
         childindex++;
-        if (fibValues[childindex][curr].second != 0) {
-            if (beat[pos][0][0] == beat[childindex][0][n1] && beat[pos][1][0] == beat[childindex][1][n2])
+        if (fibValues[childindex][curr].second != -1) {
+            if (beat[pos][0][0] == beat[childindex][0][n1] && beat[pos][1][0] == beat[childindex][1][n2]) {
+                if (fibValues[pos][0].first == -1)
+                    fibValues[pos][0] = { 0,0 };
                 fibValues[pos][0] = fibValues[pos][0] + fibValues[childindex][curr];
-            else if (beat[pos][0][2] == beat[childindex][0][n1] && beat[pos][1][0] == beat[childindex][1][n2])
+
+            }
+            else if (beat[pos][0][2] == beat[childindex][0][n1] && beat[pos][1][0] == beat[childindex][1][n2]) {
+                if (fibValues[pos][1].first == -1)
+                    fibValues[pos][1] = { 0,0 };
                 fibValues[pos][1] = fibValues[pos][1] + fibValues[childindex][curr];
-            else if (beat[pos][0][0] == beat[childindex][0][n1] && beat[pos][1][2] == beat[childindex][1][n2])
+            }
+            else if (beat[pos][0][0] == beat[childindex][0][n1] && beat[pos][1][2] == beat[childindex][1][n2]) {
+                if (fibValues[pos][2].first == -1)
+                    fibValues[pos][2] = { 0,0 };
                 fibValues[pos][2] = fibValues[pos][2] + fibValues[childindex][curr];
-            else if (beat[pos][0][2] == beat[childindex][0][n1] && beat[pos][1][2] == beat[childindex][1][n2])
+            }
+            else if (beat[pos][0][2] == beat[childindex][0][n1] && beat[pos][1][2] == beat[childindex][1][n2]) {
+                if (fibValues[pos][3].first == -1)
+                    fibValues[pos][3] = { 0,0 };
                 fibValues[pos][3] = fibValues[pos][3] + fibValues[childindex][curr];
-            else if (beat[pos][0][0] == beat[childindex][0][n1])
+            }
+            else if (beat[pos][0][0] == beat[childindex][0][n1]) {
+                if (fibValues[pos][4].first == -1)
+                    fibValues[pos][4] = { 0,0 };
                 fibValues[pos][4] = fibValues[pos][4] + fibValues[childindex][curr];
-            else if (beat[pos][0][2] == beat[childindex][0][n1])
+            }
+            else if (beat[pos][0][2] == beat[childindex][0][n1]) {
+                if (fibValues[pos][5].first == -1)
+                    fibValues[pos][5] = { 0,0 };
                 fibValues[pos][5] = fibValues[pos][5] + fibValues[childindex][curr];
-            else if (beat[pos][1][0] == beat[childindex][1][n2])
+            }
+            else if (beat[pos][1][0] == beat[childindex][1][n2]) {
+                if (fibValues[pos][6].first == -1)
+                    fibValues[pos][6] = { 0,0 };
                 fibValues[pos][6] = fibValues[pos][6] + fibValues[childindex][curr];
-            else if (beat[pos][1][2] == beat[childindex][1][n2])
+            }
+            else if (beat[pos][1][2] == beat[childindex][1][n2]) {
+                if (fibValues[pos][7].first == -1)
+                    fibValues[pos][7] = { 0,0 };
                 fibValues[pos][7] = fibValues[pos][7] + fibValues[childindex][curr];
-            else
+            }
+            else {
+                if (fibValues[pos][8].first == -1)
+                    fibValues[pos][8] = { 0,0 };
                 fibValues[pos][8] = fibValues[pos][8] + fibValues[childindex][curr];
+            }
         }
         childindex--;
         curr++;
         n1 = 2;
-
-        if (fibValues[childindex][curr].second != 0) {
-            if (beat[pos][0][2] == beat[childindex][0][n1] && beat[pos][1][0] == beat[childindex][1][n2])
+        if (fibValues[childindex][curr].second != -1) {
+            
+             if (beat[pos][0][2] == beat[childindex][0][n1] && beat[pos][1][0] == beat[childindex][1][n2]) {
+                if (fibValues[pos][1].first == -1)
+                    fibValues[pos][1] = { 0,0 };
                 fibValues[pos][1] = fibValues[pos][1] + fibValues[childindex][curr];
-            else if (beat[pos][0][2] == beat[childindex][0][n1] && beat[pos][1][2] == beat[childindex][1][n2])
+            }
+          
+            else if (beat[pos][0][2] == beat[childindex][0][n1] && beat[pos][1][2] == beat[childindex][1][n2]) {
+                if (fibValues[pos][3].first == -1)
+                    fibValues[pos][3] = { 0,0 };
                 fibValues[pos][3] = fibValues[pos][3] + fibValues[childindex][curr];
-            else if (beat[pos][0][2] == beat[childindex][0][n1])
+            }
+            
+            else if (beat[pos][0][2] == beat[childindex][0][n1]) {
+                if (fibValues[pos][5].first == -1)
+                    fibValues[pos][5] = { 0,0 };
                 fibValues[pos][5] = fibValues[pos][5] + fibValues[childindex][curr];
-            else if (beat[pos][1][0] == beat[childindex][1][n2])
+            }
+            else if (beat[pos][1][0] == beat[childindex][1][n2]) {
+                if (fibValues[pos][6].first == -1)
+                    fibValues[pos][6] = { 0,0 };
                 fibValues[pos][6] = fibValues[pos][6] + fibValues[childindex][curr];
-
-            else
+            }
+            else if (beat[pos][1][2] == beat[childindex][1][n2]) {
+                 if (fibValues[pos][7].first == -1)
+                     fibValues[pos][7] = { 0,0 };
+                 fibValues[pos][7] = fibValues[pos][7] + fibValues[childindex][curr];
+             }
+           
+            else {
+                if (fibValues[pos][8].first == -1)
+                    fibValues[pos][8] = { 0,0 };
                 fibValues[pos][8] = fibValues[pos][8] + fibValues[childindex][curr];
+            }
         }
+        
         childindex++;
-        if (fibValues[childindex][curr].second != 0) {
-            if (beat[pos][0][2] == beat[childindex][0][n1] && beat[pos][1][0] == beat[childindex][1][n2])
-                fibValues[pos][1] = fibValues[pos][1] + fibValues[childindex][curr];
-            else if (beat[pos][0][2] == beat[childindex][0][n1] && beat[pos][1][2] == beat[childindex][1][n2])
-                fibValues[pos][3] = fibValues[pos][3] + fibValues[childindex][curr];
-            else if (beat[pos][0][2] == beat[childindex][0][n1])
-                fibValues[pos][5] = fibValues[pos][5] + fibValues[childindex][curr];
-            else if (beat[pos][1][0] == beat[childindex][1][n2])
-                fibValues[pos][6] = fibValues[pos][6] + fibValues[childindex][curr];
+        if (fibValues[childindex][curr].second != -1) {
 
-            else
+            if (beat[pos][0][2] == beat[childindex][0][n1] && beat[pos][1][0] == beat[childindex][1][n2]) {
+                if (fibValues[pos][1].first == -1)
+                    fibValues[pos][1] = { 0,0 };
+                fibValues[pos][1] = fibValues[pos][1] + fibValues[childindex][curr];
+            }
+
+            else if (beat[pos][0][2] == beat[childindex][0][n1] && beat[pos][1][2] == beat[childindex][1][n2]) {
+                if (fibValues[pos][3].first == -1)
+                    fibValues[pos][3] = { 0,0 };
+                fibValues[pos][3] = fibValues[pos][3] + fibValues[childindex][curr];
+            }
+
+            else if (beat[pos][0][2] == beat[childindex][0][n1]) {
+                if (fibValues[pos][5].first == -1)
+                    fibValues[pos][5] = { 0,0 };
+                fibValues[pos][5] = fibValues[pos][5] + fibValues[childindex][curr];
+            }
+            else if (beat[pos][1][0] == beat[childindex][1][n2]) {
+                if (fibValues[pos][6].first == -1)
+                    fibValues[pos][6] = { 0,0 };
+                fibValues[pos][6] = fibValues[pos][6] + fibValues[childindex][curr];
+            }
+            else if (beat[pos][1][2] == beat[childindex][1][n2]) {
+                if (fibValues[pos][7].first == -1)
+                    fibValues[pos][7] = { 0,0 };
+                fibValues[pos][7] = fibValues[pos][7] + fibValues[childindex][curr];
+            }
+
+            else {
+                if (fibValues[pos][8].first == -1)
+                    fibValues[pos][8] = { 0,0 };
                 fibValues[pos][8] = fibValues[pos][8] + fibValues[childindex][curr];
+            }
         }
         childindex--;
         curr++;
         n1 = 0;
         n2 = 2;
-        if (fibValues[childindex][curr].second != 0) {
-
-            if (beat[pos][0][0] == beat[childindex][0][n1] && beat[pos][1][2] == beat[childindex][1][n2])
+        if (fibValues[childindex][curr].second != -1) {
+            
+             if (beat[pos][0][0] == beat[childindex][0][n1] && beat[pos][1][2] == beat[childindex][1][n2]) {
+                if (fibValues[pos][2].first == -1)
+                    fibValues[pos][2] = { 0,0 };
                 fibValues[pos][2] = fibValues[pos][2] + fibValues[childindex][curr];
-            else if (beat[pos][0][2] == beat[childindex][0][n1] && beat[pos][1][2] == beat[childindex][1][n2])
+            }
+            else if (beat[pos][0][2] == beat[childindex][0][n1] && beat[pos][1][2] == beat[childindex][1][n2]) {
+                if (fibValues[pos][3].first == -1)
+                    fibValues[pos][3] = { 0,0 };
                 fibValues[pos][3] = fibValues[pos][3] + fibValues[childindex][curr];
-            else if (beat[pos][0][0] == beat[childindex][0][n1])
+            }
+            else if (beat[pos][0][0] == beat[childindex][0][n1]) {
+                if (fibValues[pos][4].first == -1)
+                    fibValues[pos][4] = { 0,0 };
                 fibValues[pos][4] = fibValues[pos][4] + fibValues[childindex][curr];
-
-            else if (beat[pos][1][2] == beat[childindex][1][n2])
+            }
+            else if (beat[pos][0][2] == beat[childindex][0][n1]) {
+                 if (fibValues[pos][5].first == -1)
+                     fibValues[pos][5] = { 0,0 };
+                 fibValues[pos][5] = fibValues[pos][5] + fibValues[childindex][curr];
+             }
+            
+            else if (beat[pos][1][2] == beat[childindex][1][n2]) {
+                if (fibValues[pos][7].first == -1)
+                    fibValues[pos][7] = { 0,0 };
                 fibValues[pos][7] = fibValues[pos][7] + fibValues[childindex][curr];
-            else
+            }
+            else {
+                if (fibValues[pos][8].first == -1)
+                    fibValues[pos][8] = { 0,0 };
                 fibValues[pos][8] = fibValues[pos][8] + fibValues[childindex][curr];
+            }
         }
+       
         childindex++;
-        if (fibValues[childindex][curr].second != 0) {
+        if (fibValues[childindex][curr].second != -1) {
 
-            if (beat[pos][0][0] == beat[childindex][0][n1] && beat[pos][1][2] == beat[childindex][1][n2])
+            if (beat[pos][0][0] == beat[childindex][0][n1] && beat[pos][1][2] == beat[childindex][1][n2]) {
+                if (fibValues[pos][2].first == -1)
+                    fibValues[pos][2] = { 0,0 };
                 fibValues[pos][2] = fibValues[pos][2] + fibValues[childindex][curr];
-            else if (beat[pos][0][2] == beat[childindex][0][n1] && beat[pos][1][2] == beat[childindex][1][n2])
+            }
+            else if (beat[pos][0][2] == beat[childindex][0][n1] && beat[pos][1][2] == beat[childindex][1][n2]) {
+                if (fibValues[pos][3].first == -1)
+                    fibValues[pos][3] = { 0,0 };
                 fibValues[pos][3] = fibValues[pos][3] + fibValues[childindex][curr];
-            else if (beat[pos][0][0] == beat[childindex][0][n1])
+            }
+            else if (beat[pos][0][0] == beat[childindex][0][n1]) {
+                if (fibValues[pos][4].first == -1)
+                    fibValues[pos][4] = { 0,0 };
                 fibValues[pos][4] = fibValues[pos][4] + fibValues[childindex][curr];
+            }
+            else if (beat[pos][0][2] == beat[childindex][0][n1]) {
+                if (fibValues[pos][5].first == -1)
+                    fibValues[pos][5] = { 0,0 };
+                fibValues[pos][5] = fibValues[pos][5] + fibValues[childindex][curr];
+            }
 
-            else if (beat[pos][1][2] == beat[childindex][1][n2])
+            else if (beat[pos][1][2] == beat[childindex][1][n2]) {
+                if (fibValues[pos][7].first == -1)
+                    fibValues[pos][7] = { 0,0 };
                 fibValues[pos][7] = fibValues[pos][7] + fibValues[childindex][curr];
-            else
+            }
+            else {
+                if (fibValues[pos][8].first == -1)
+                    fibValues[pos][8] = { 0,0 };
                 fibValues[pos][8] = fibValues[pos][8] + fibValues[childindex][curr];
+            }
         }
         childindex--;
         curr++;
         n1 = 2;
-        if (fibValues[childindex][curr].second != 0) {
-
-            if (beat[pos][0][2] == beat[childindex][0][n1] && beat[pos][1][2] == beat[childindex][1][n2])
+        if (fibValues[childindex][curr].second != -1) {
+            
+             if (beat[pos][0][2] == beat[childindex][0][n1] && beat[pos][1][2] == beat[childindex][1][n2]) {
+                if (fibValues[pos][3].first == -1)
+                    fibValues[pos][3] = { 0,0 };
                 fibValues[pos][3] = fibValues[pos][3] + fibValues[childindex][curr];
-
-            else if (beat[pos][0][2] == beat[childindex][0][n1])
+            }
+           
+            else if (beat[pos][0][2] == beat[childindex][0][n1]) {
+                if (fibValues[pos][5].first == -1)
+                    fibValues[pos][5] = { 0,0 };
                 fibValues[pos][5] = fibValues[pos][5] + fibValues[childindex][curr];
-
-            else if (beat[pos][1][2] == beat[childindex][1][n2])
+            }
+            
+            else if (beat[pos][1][2] == beat[childindex][1][n2]) {
+                if (fibValues[pos][7].first == -1)
+                    fibValues[pos][7] = { 0,0 };
                 fibValues[pos][7] = fibValues[pos][7] + fibValues[childindex][curr];
-            else
+            }
+            else {
+                if (fibValues[pos][8].first == -1)
+                    fibValues[pos][8] = { 0,0 };
                 fibValues[pos][8] = fibValues[pos][8] + fibValues[childindex][curr];
+            }
         }
+       
         childindex++;
-        if (fibValues[childindex][curr].second != 0) {
+        if (fibValues[childindex][curr].second != -1) {
 
-            if (beat[pos][0][2] == beat[childindex][0][n1] && beat[pos][1][2] == beat[childindex][1][n2])
+            if (beat[pos][0][2] == beat[childindex][0][n1] && beat[pos][1][2] == beat[childindex][1][n2]) {
+                if (fibValues[pos][3].first == -1)
+                    fibValues[pos][3] = { 0,0 };
                 fibValues[pos][3] = fibValues[pos][3] + fibValues[childindex][curr];
+            }
 
-            else if (beat[pos][0][2] == beat[childindex][0][n1])
+            else if (beat[pos][0][2] == beat[childindex][0][n1]) {
+                if (fibValues[pos][5].first == -1)
+                    fibValues[pos][5] = { 0,0 };
                 fibValues[pos][5] = fibValues[pos][5] + fibValues[childindex][curr];
+            }
 
-            else if (beat[pos][1][2] == beat[childindex][1][n2])
+            else if (beat[pos][1][2] == beat[childindex][1][n2]) {
+                if (fibValues[pos][7].first == -1)
+                    fibValues[pos][7] = { 0,0 };
                 fibValues[pos][7] = fibValues[pos][7] + fibValues[childindex][curr];
-            else
+            }
+            else {
+                if (fibValues[pos][8].first == -1)
+                    fibValues[pos][8] = { 0,0 };
                 fibValues[pos][8] = fibValues[pos][8] + fibValues[childindex][curr];
+            }
         }
         childindex--;
         curr++;
         n1 = 0;
-        if (fibValues[childindex][curr].second != 0) {
-
-            if (beat[pos][0][0] == beat[childindex][0][n1])
+        if (fibValues[childindex][curr].second != -1) {
+           
+             if (beat[pos][0][0] == beat[childindex][0][n1]) {
+                if (fibValues[pos][4].first == -1)
+                    fibValues[pos][4] = { 0,0 };
                 fibValues[pos][4] = fibValues[pos][4] + fibValues[childindex][curr];
-            else if (beat[pos][0][2] == beat[childindex][0][n1])
+            }
+            else if (beat[pos][0][2] == beat[childindex][0][n1]) {
+                if (fibValues[pos][5].first == -1)
+                    fibValues[pos][5] = { 0,0 };
                 fibValues[pos][5] = fibValues[pos][5] + fibValues[childindex][curr];
-
-            else
+            }
+            
+            else {
+                if (fibValues[pos][8].first == -1)
+                    fibValues[pos][8] = { 0,0 };
                 fibValues[pos][8] = fibValues[pos][8] + fibValues[childindex][curr];
+            }
         }
+        
         childindex++;
-        if (fibValues[childindex][curr].second != 0) {
+        if (fibValues[childindex][curr].second != -1) {
 
-            if (beat[pos][0][0] == beat[childindex][0][n1])
+            if (beat[pos][0][0] == beat[childindex][0][n1]) {
+                if (fibValues[pos][4].first == -1)
+                    fibValues[pos][4] = { 0,0 };
                 fibValues[pos][4] = fibValues[pos][4] + fibValues[childindex][curr];
-            else if (beat[pos][0][2] == beat[childindex][0][n1])
+            }
+            else if (beat[pos][0][2] == beat[childindex][0][n1]) {
+                if (fibValues[pos][5].first == -1)
+                    fibValues[pos][5] = { 0,0 };
                 fibValues[pos][5] = fibValues[pos][5] + fibValues[childindex][curr];
+            }
 
-            else
+            else {
+                if (fibValues[pos][8].first == -1)
+                    fibValues[pos][8] = { 0,0 };
                 fibValues[pos][8] = fibValues[pos][8] + fibValues[childindex][curr];
+            }
         }
         childindex--;
         curr++;
         n1 = 2;
 
-        if (fibValues[childindex][curr].second != 0) {
-            if (beat[pos][0][2] == beat[childindex][0][n1])
-                fibValues[pos][5] = fibValues[pos][5] + fibValues[childindex][curr];
+        if (fibValues[childindex][curr].second != -1) {
 
-            else
+            
+             if (beat[pos][0][2] == beat[childindex][0][n1]) {
+                if (fibValues[pos][5].first == -1)
+                    fibValues[pos][5] = { 0,0 };
+                fibValues[pos][5] = fibValues[pos][5] + fibValues[childindex][curr];
+            }
+
+            else {
+                if (fibValues[pos][8].first == -1)
+                    fibValues[pos][8] = { 0,0 };
                 fibValues[pos][8] = fibValues[pos][8] + fibValues[childindex][curr];
+            }
         }
         childindex++;
-        if (fibValues[childindex][curr].second != 0) {
-            if (beat[pos][0][2] == beat[childindex][0][n1])
-                fibValues[pos][5] = fibValues[pos][5] + fibValues[childindex][curr];
+        if (fibValues[childindex][curr].second != -1) {
 
-            else
+
+            if (beat[pos][0][2] == beat[childindex][0][n1]) {
+                if (fibValues[pos][5].first == -1)
+                    fibValues[pos][5] = { 0,0 };
+                fibValues[pos][5] = fibValues[pos][5] + fibValues[childindex][curr];
+            }
+
+            else {
+                if (fibValues[pos][8].first == -1)
+                    fibValues[pos][8] = { 0,0 };
                 fibValues[pos][8] = fibValues[pos][8] + fibValues[childindex][curr];
+            }
         }
         childindex--;
         curr++;
         n2 = 0;
-        if (fibValues[childindex][curr].second != 0) {
-            if (beat[pos][1][0] == beat[childindex][1][n2])
+        if (fibValues[childindex][curr].second != -1) {
+        
+             if (beat[pos][1][0] == beat[childindex][1][n2]) {
+                if (fibValues[pos][6].first == -1)
+                    fibValues[pos][6] = { 0,0 };
                 fibValues[pos][6] = fibValues[pos][6] + fibValues[childindex][curr];
-            else if (beat[pos][1][2] == beat[childindex][1][n2])
+            }
+            else if (beat[pos][1][2] == beat[childindex][1][n2]) {
+                if (fibValues[pos][7].first == -1)
+                    fibValues[pos][7] = { 0,0 };
                 fibValues[pos][7] = fibValues[pos][7] + fibValues[childindex][curr];
-            else
+            }
+            else {
+                if (fibValues[pos][8].first == -1)
+                    fibValues[pos][8] = { 0,0 };
                 fibValues[pos][8] = fibValues[pos][8] + fibValues[childindex][curr];
+            }
         }
+        
         childindex++;
-        if (fibValues[childindex][curr].second != 0) {
-            if (beat[pos][1][0] == beat[childindex][1][n2])
+        if (fibValues[childindex][curr].second != -1) {
+
+            if (beat[pos][1][0] == beat[childindex][1][n2]) {
+                if (fibValues[pos][6].first == -1)
+                    fibValues[pos][6] = { 0,0 };
                 fibValues[pos][6] = fibValues[pos][6] + fibValues[childindex][curr];
-            else if (beat[pos][1][2] == beat[childindex][1][n2])
+            }
+            else if (beat[pos][1][2] == beat[childindex][1][n2]) {
+                if (fibValues[pos][7].first == -1)
+                    fibValues[pos][7] = { 0,0 };
                 fibValues[pos][7] = fibValues[pos][7] + fibValues[childindex][curr];
-            else
+            }
+            else {
+                if (fibValues[pos][8].first == -1)
+                    fibValues[pos][8] = { 0,0 };
                 fibValues[pos][8] = fibValues[pos][8] + fibValues[childindex][curr];
+            }
         }
         childindex--;
         curr++;
         n2 = 2;
-        if (fibValues[childindex][curr].second != 0) {
-            if (beat[pos][1][2] == beat[childindex][1][n2])
+        if (fibValues[childindex][curr].second != -1) {
+
+            if (beat[pos][1][2] == beat[childindex][1][n2]) {
+                if (fibValues[pos][7].first == -1)
+                    fibValues[pos][7] = { 0,0 };
                 fibValues[pos][7] = fibValues[pos][7] + fibValues[childindex][curr];
-            else
+            }
+            else {
+                if (fibValues[pos][8].first == -1)
+                    fibValues[pos][8] = { 0,0 };
                 fibValues[pos][8] = fibValues[pos][8] + fibValues[childindex][curr];
+            }
         }
         childindex++;
-        if (fibValues[childindex][curr].second != 0) {
-            if (beat[pos][1][2] == beat[childindex][1][n2])
+        if (fibValues[childindex][curr].second != -1) {
+
+            if (beat[pos][1][2] == beat[childindex][1][n2]) {
+                if (fibValues[pos][7].first == -1)
+                    fibValues[pos][7] = { 0,0 };
                 fibValues[pos][7] = fibValues[pos][7] + fibValues[childindex][curr];
-            else
+            }
+            else {
+                if (fibValues[pos][8].first == -1)
+                    fibValues[pos][8] = { 0,0 };
                 fibValues[pos][8] = fibValues[pos][8] + fibValues[childindex][curr];
+            }
         }
         childindex--;
         curr++;
-        if (fibValues[childindex][curr].second != 0)
+        if (fibValues[childindex][curr].second != -1) {
+            if (fibValues[pos][8].first == -1)
+                fibValues[pos][8] = { 0,0 };
             fibValues[pos][8] = fibValues[pos][8] + fibValues[childindex][curr];
+        }
         childindex++;
-        if (fibValues[childindex][curr].second != 0)
+        if (fibValues[childindex][curr].second != -1) {
+            if (fibValues[pos][8].first == -1)
+                fibValues[pos][8] = { 0,0 };
             fibValues[pos][8] = fibValues[pos][8] + fibValues[childindex][curr];
+        }
 
     }
     void build(int l, int r, int pos)
@@ -477,7 +729,7 @@ struct TopDownSegmentTreeBeats {
         if (l == r)
         {
 
-            
+
             beat[pos][0][0] = { A1[l] };
             beat[pos][0][1] = { -defaultValue };
             beat[pos][1][0] = { A2[l] };
@@ -512,21 +764,32 @@ struct TopDownSegmentTreeBeats {
 
         if (beat[pos][i][0] > val) {
             int diff = val - beat[pos][i][0];
-            beat[pos][i][0] = val;
-            if (fibValues[pos][0].second != 0)
+            
+            if (fibValues[pos][0].second != -1)
                 fibValues[pos][0] = mult(diff, fibValues[pos][0]);
+             if (fibValues[pos][3].second != -1 && beat[pos][i][0] == beat[pos][i][2])
+                fibValues[pos][3] = mult(diff, fibValues[pos][3]);
             if (!i) {
-                if (fibValues[pos][2].second != 0)
+                if (fibValues[pos][2].second != -1)
                     fibValues[pos][2] = mult(diff, fibValues[pos][2]);
-                if (fibValues[pos][4].second != 0)
+                 if (fibValues[pos][1].second != -1 && beat[pos][i][0] == beat[pos][i][2])
+                    fibValues[pos][1] = mult(diff, fibValues[pos][1]);
+                if (fibValues[pos][4].second != -1)
                     fibValues[pos][4] = mult(diff, fibValues[pos][4]);
+                  if (fibValues[pos][5].second != -1 && beat[pos][i][0] == beat[pos][i][2])
+                    fibValues[pos][5] = mult(diff, fibValues[pos][5]);
             }
             else {
-                if (fibValues[pos][1].second != 0)
+                if (fibValues[pos][1].second != -1)
                     fibValues[pos][1] = mult(diff, fibValues[pos][1]);
-                if (fibValues[pos][6].second != 0)
+                 if (fibValues[pos][2].second != -1 && beat[pos][i][0] == beat[pos][i][2])
+                    fibValues[pos][2] = mult(diff, fibValues[pos][2]);
+                if (fibValues[pos][6].second != -1)
                     fibValues[pos][6] = mult(diff, fibValues[pos][6]);
+                 if (fibValues[pos][7].second != -1 && beat[pos][i][0] == beat[pos][i][2])
+                    fibValues[pos][7] = mult(diff, fibValues[pos][7]);
             }
+            beat[pos][i][0] = val;
             if (beat[pos][i][2] > val)
                 beat[pos][i][2] = val;
 
@@ -535,12 +798,12 @@ struct TopDownSegmentTreeBeats {
             if (beat[pos][i][1] > val && beat[pos][i][1] != -defaultValue)
                 beat[pos][i][1] = val;
 
-           
+
 
         }
 
 
-      
+        ;
 
 
 
@@ -551,29 +814,40 @@ struct TopDownSegmentTreeBeats {
     void updateMin(int& pos, bool& i, bool& leaf, ll& val) {
         if (beat[pos][i][2] < val) {
             int diff = val - beat[pos][i][2];
-            beat[pos][i][2] = val;
-            if (!leaf) {
-                if (fibValues[pos][3].second != 0)
+           
+            
+                if (fibValues[pos][3].second != -1)
                     fibValues[pos][3] = mult(diff, fibValues[pos][3]);
+                 if(fibValues[pos][0].second != -1 && beat[pos][i][0] == beat[pos][i][2])
+                    fibValues[pos][0] = mult(diff, fibValues[pos][0]);
                 if (!i) {
-                    if (fibValues[pos][1].second != 0)
+                    if (fibValues[pos][1].second != -1)
                         fibValues[pos][1] = mult(diff, fibValues[pos][1]);
-                    if (fibValues[pos][5].second != 0)
+                     if(fibValues[pos][2].second != -1 && beat[pos][i][0] == beat[pos][i][2])
+                        fibValues[pos][2] = mult(diff, fibValues[pos][2]);
+
+                    if (fibValues[pos][5].second != -1)
                         fibValues[pos][5] = mult(diff, fibValues[pos][5]);
+                     if(fibValues[pos][4].second != -1 && beat[pos][i][0]== beat[pos][i][2])
+                        fibValues[pos][4] = mult(diff, fibValues[pos][4]);
                 }
                 else {
-                    if (fibValues[pos][2].second != 0)
+                    if (fibValues[pos][2].second != -1)
                         fibValues[pos][2] = mult(diff, fibValues[pos][2]);
-                    if (fibValues[pos][7].second != 0)
+                     if(fibValues[pos][1].second != -1 && beat[pos][i][0] == beat[pos][i][2])
+                        fibValues[pos][1] = mult(diff, fibValues[pos][1]);
+                    if (fibValues[pos][7].second != -1)
                         fibValues[pos][7] = mult(diff, fibValues[pos][7]);
+                     if(fibValues[pos][6].second != -1 && beat[pos][i][0] == beat[pos][i][2])
+                        fibValues[pos][6] = mult(diff, fibValues[pos][6]);
                 }
 
 
+                beat[pos][i][2] = val;
 
 
-
-            }
-            else  fibValues[pos][0] = mult(diff, fibValues[pos][0]);
+            
+           
 
             if (beat[pos][i][0] < val)
                 beat[pos][i][0] = val;
@@ -582,12 +856,12 @@ struct TopDownSegmentTreeBeats {
             if (beat[pos][i][3] < val && beat[pos][i][3] != defaultValue)
                 beat[pos][i][3] = val;
 
-           
+
         }
 
 
 
-      
+
     }
     void updateAdd(int& pos, bool& i, bool& leaf) {
 
@@ -598,7 +872,7 @@ struct TopDownSegmentTreeBeats {
         if (beat[pos][i][3] != defaultValue)
             beat[pos][i][3] = beat[pos][i][3] + lazyUpdate[pos][i];
         for (int k = 0; k < 9; k++) {
-            if (fibValues[pos][k].second != 0)
+            if (fibValues[pos][k].second != -1)
                 fibValues[pos][k] = mult(lazyUpdate[pos][i], fibValues[pos][k]);
         }
 
@@ -614,7 +888,7 @@ struct TopDownSegmentTreeBeats {
         }
 
         lazyUpdate[pos][i] = defaultValue;
-        
+
     }
 
 
@@ -671,35 +945,35 @@ struct TopDownSegmentTreeBeats {
             int next = 2 * pos + 1;
             int next1 = next + 1;
             leaf = l == mid;
-           
-                if (lazyUpdate[next][a] != defaultValue)
-                    updateAdd(next, a, leaf);
-                updateMax(next, a, leaf, beat[pos][a][0]);
-                updateMin(next, a, leaf, beat[pos][a][2]);
 
-                a = true;
+            if (lazyUpdate[next][a] != defaultValue)
+                updateAdd(next, a, leaf);
+            updateMax(next, a, leaf, beat[pos][a][0]);
+            updateMin(next, a, leaf, beat[pos][a][2]);
 
-                if (lazyUpdate[next][a] != defaultValue)
-                    updateAdd(next, a, leaf);
-                updateMax(next, a, leaf, beat[pos][a][0]);
-                updateMin(next, a, leaf, beat[pos][a][2]);
-           
+            a = true;
+
+            if (lazyUpdate[next][a] != defaultValue)
+                updateAdd(next, a, leaf);
+            updateMax(next, a, leaf, beat[pos][a][0]);
+            updateMin(next, a, leaf, beat[pos][a][2]);
+
 
             leaf = mid + 1 == r;
             a = false;
-            
-                if (lazyUpdate[next1][a] != defaultValue)
-                    updateAdd(next1, a, leaf);
-                updateMax(next1, a, leaf, beat[pos][a][0]);
-                updateMin(next1, a, leaf, beat[pos][a][2]);
 
-                a = true;
+            if (lazyUpdate[next1][a] != defaultValue)
+                updateAdd(next1, a, leaf);
+            updateMax(next1, a, leaf, beat[pos][a][0]);
+            updateMin(next1, a, leaf, beat[pos][a][2]);
 
-                if (lazyUpdate[next1][a] != defaultValue)
-                    updateAdd(next1, a, leaf);
-                updateMax(next1, a, leaf, beat[pos][a][0]);
-                updateMin(next1, a, leaf, beat[pos][a][2]);
-           
+            a = true;
+
+            if (lazyUpdate[next1][a] != defaultValue)
+                updateAdd(next1, a, leaf);
+            updateMax(next1, a, leaf, beat[pos][a][0]);
+            updateMin(next1, a, leaf, beat[pos][a][2]);
+
 
 
 
@@ -727,9 +1001,9 @@ struct TopDownSegmentTreeBeats {
 
         //in range
         if (l <= begin && r >= end) {
-            pair<int, int> ans = fibValues[pos][0];
-            for (int i = 1; i < 9; i++) {
-                if (fibValues[pos][i].second != 0)
+            pair<int, int> ans = { 0,0 };
+            for (int i = 0; i < 9; i++) {
+                if (fibValues[pos][i].second != -1)
                     ans = ans + fibValues[pos][i];
             }
             return ans;
@@ -737,37 +1011,37 @@ struct TopDownSegmentTreeBeats {
         bool leaf = false;
         int mid = getMiddle(begin, end);
         bool a = false;
-       
+
         if (begin != end) {
             int next = 2 * pos + 1;
             int next1 = next + 1;
             leaf = begin == mid;
-            if (!(mid < l || begin > r)) {
-                if (lazyUpdate[next][a] != defaultValue)
-                    updateAdd(next, a, leaf);
-                updateMax(next, a, leaf, beat[pos][a][0]);
-                updateMin(next, a, leaf, beat[pos][a][2]);
 
-                a = true;
-                if (lazyUpdate[next][a] != defaultValue)
-                    updateAdd(next, a, leaf);
-                updateMax(next, a, leaf, beat[pos][a][0]);
-                updateMin(next, a, leaf, beat[pos][a][2]);
-            }
-            if (!(end < l || mid+1 > r)) {
-                leaf = mid + 1 == end;
-                a = false;
-                if (lazyUpdate[next1][a] != defaultValue)
-                    updateAdd(next1, a, leaf);
-                updateMax(next1, a, leaf, beat[pos][a][0]);
-                updateMin(next1, a, leaf, beat[pos][a][2]);
+            if (lazyUpdate[next][a] != defaultValue)
+                updateAdd(next, a, leaf);
+            updateMax(next, a, leaf, beat[pos][a][0]);
+            updateMin(next, a, leaf, beat[pos][a][2]);
 
-                a = true;
-                if (lazyUpdate[next1][a] != defaultValue)
-                    updateAdd(next1, a, leaf);
-                updateMax(next1, a, leaf, beat[pos][a][0]);
-                updateMin(next1, a, leaf, beat[pos][a][2]);
-            }
+            a = true;
+            if (lazyUpdate[next][a] != defaultValue)
+                updateAdd(next, a, leaf);
+            updateMax(next, a, leaf, beat[pos][a][0]);
+            updateMin(next, a, leaf, beat[pos][a][2]);
+
+
+            leaf = mid + 1 == end;
+            a = false;
+            if (lazyUpdate[next1][a] != defaultValue)
+                updateAdd(next1, a, leaf);
+            updateMax(next1, a, leaf, beat[pos][a][0]);
+            updateMin(next1, a, leaf, beat[pos][a][2]);
+
+            a = true;
+            if (lazyUpdate[next1][a] != defaultValue)
+                updateAdd(next1, a, leaf);
+            updateMax(next1, a, leaf, beat[pos][a][0]);
+            updateMin(next1, a, leaf, beat[pos][a][2]);
+
 
 
 
@@ -777,8 +1051,8 @@ struct TopDownSegmentTreeBeats {
 
         pair<int, int> x1 = query(begin, mid, l, r, 2 * pos + 1);
         pair<int, int> x2 = query(mid + 1, end, l, r, 2 * pos + 2);
-       
 
+        
         return x1 + x2;
     }
 
@@ -811,7 +1085,7 @@ int main()
             x2--, x3--;
             int ans = tree.query(x2, x3).first;
             printf("%d\n", ans);
-            
+
         }
         else {
             scanf("%d%d%d%d", &x1, &x3, &x4, &x5);
