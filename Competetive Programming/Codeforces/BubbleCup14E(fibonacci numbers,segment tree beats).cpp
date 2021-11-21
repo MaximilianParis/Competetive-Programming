@@ -39,7 +39,7 @@ struct TopDownSegmentTreeBeats {
 
     // default Values
     ll defaultValue;
-    vector<bool> Updates;
+   
 
     //construct segment tree with specific default value and merge function
     TopDownSegmentTreeBeats(int n, ll defaultValue) {
@@ -122,7 +122,7 @@ struct TopDownSegmentTreeBeats {
                     curr[1][1] = matrix_inverse1[div][1][1];
                 }
                 else {
-                    for (int j = 0; j < 2 && rest >= 0; j++) {
+                    for (int j = 0; j < 2 ; j++) {
                         for (int k = 0; k < 2; k++) {
                             for (int l = 0; l < 2; l++) {
 
