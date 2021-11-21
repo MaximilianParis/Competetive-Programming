@@ -158,14 +158,7 @@ struct TopDownSegmentTreeBeats {
         matrix_inverse[0][1][0] = 1;
         matrix_inverse[0][1][1] = 0;
         for (int i = 1; i < Mod1; i++) {
-            matrix[i][0][0] = 0;
-            matrix[i][0][1] = 0;
-            matrix[i][1][0] = 0;
-            matrix[i][1][1] = 0;
-            matrix_inverse[i][0][0] = 0;
-            matrix_inverse[i][0][1] = 0;
-            matrix_inverse[i][1][0] = 0;
-            matrix_inverse[i][1][1] = 0;
+           
             for (int j = 0; j < 2; j++) {
                 for (int k = 0; k < 2; k++) {
                     for (int l = 0; l < 2; l++) {
