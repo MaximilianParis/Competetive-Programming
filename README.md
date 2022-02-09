@@ -8,6 +8,6 @@ The solution files will often have a link to the problem statement and constrain
 the filename. I have the following general pattern for my file names:
 Platform Name-Round-Problem Name-(Problem Tags), you could try to google these.
 Sometimes there will also be a brute force solution and a random test data generator.
-I hope you find these files helpful. Won't be as active in here since the next semester just started.
+I hope you find these files helpful. 
 
 Max
