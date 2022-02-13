@@ -2,7 +2,7 @@
 using namespace std;
 //Author: Max Paris
 //O(MaxN*log(MaxN)) only if there are not to many duplicate values, because dfs gets expensive then
-//Problem Link:https://codeforces.com/contest/990/my
+//Problem Link:https://codeforces.com/contest/990/problem/G
 typedef long long ll;
 ll n;
 vector<pair<int, vector<int>>> graph;
