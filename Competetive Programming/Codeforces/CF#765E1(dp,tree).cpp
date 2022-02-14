@@ -27,7 +27,8 @@ void constructRBS() {
        
     }
     
-    curr = vector<char>(n+max(0,cnt)+cnt1);
+        cnt=cnt1+cnt;
+    curr = vector<char>(n+cnt+cnt1);
    
     for (int i = 0; i < (cnt1); i++)
         curr[i] = '(';
@@ -37,7 +38,6 @@ void constructRBS() {
         curr[i]= ')';
 
 }
-
 void constructTree(int p,int j,bool start=true,int depth=0) {
     if (depth == 0 && !start||visited[j])
         return;
