@@ -1,7 +1,8 @@
 #include<bits/stdc++.h>
 using namespace std;
 //Author: Max Paris
-
+//Problem Link:http://codeforces.com/contest/1625/problem/D
+//O(n*max(log(arr[i])))
 typedef long long ll;
 int n, k;
 
