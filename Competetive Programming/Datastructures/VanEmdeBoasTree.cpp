@@ -34,6 +34,51 @@ struct VanEmdeBoasTree {
 
 
     }
+     int lower_bound(int x) {
+		 if(Tmax<Tmin)
+			 return -1;
+		 else if(x<=Tmin)
+			 return Tmin;
+		 else if(Tmax==x)
+			 return x;
+		 else if(empty&&Tmax>x)
+			 return Tmax;
+		 else if(x>Tmax)
+			 return -1;
+		else if(!empty){
+			int childIndex = x / childsize;
+            int next = x % childsize;
+            
+            if(childs[childIndex].Tmax>=next) {
+            	return childs[childIndex].lower_bound(next)+childsize*childIndex;
+            }
+            
+            else {
+            	int index=summary.lower_bound(childIndex);
+            	if(index!=-1) {
+            		return childsize*index+childs[index].Tmin;
+            	}
+            }
+		 }
+		 
+		 return -1;
+	 }
+    
+     void insertSize(int x) {
+		 if(!find(x)) {
+			 size++;
+			 insert(x);
+		 }
+		 
+	 }
+    
+    void eraseSize(int x) {
+		 if(find(x)) {
+			 size--;
+			 erase(x);
+		 }
+		 
+	 }
 
     void insert(int x) {
         //Baum leer
@@ -41,7 +86,7 @@ struct VanEmdeBoasTree {
             Tmax = Tmin = x;
             return;
         }
-        // wichtig nur Element größer als Tmin werden propagiert nach unten, deswegen
+        // wichtig nur Element grÃ¶ÃŸer als Tmin werden propagiert nach unten, deswegen
         //hier swap
         else if (x < Tmin) {
             swap(x, Tmin);
