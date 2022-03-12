@@ -3,7 +3,7 @@ using namespace std;
 //Author: Max Paris
 
 typedef long long ll;
-int n, k,l;
+int n, k, l;
 
 struct VanEmdeBoasTree {
 
@@ -14,7 +14,7 @@ struct VanEmdeBoasTree {
     int universe;
     int childsize;
     bool empty = false;
-
+    int size = 0;
 
 
     VanEmdeBoasTree(int size) {
@@ -34,51 +34,51 @@ struct VanEmdeBoasTree {
 
 
     }
-     int lower_bound(int x) {
-		 if(Tmax<Tmin)
-			 return -1;
-		 else if(x<=Tmin)
-			 return Tmin;
-		 else if(Tmax==x)
-			 return x;
-		 else if(empty&&Tmax>x)
-			 return Tmax;
-		 else if(x>Tmax)
-			 return -1;
-		else if(!empty){
-			int childIndex = x / childsize;
+    int lower_bound(int x) {
+        if (Tmax < Tmin)
+            return -1;
+        else if (x <= Tmin)
+            return Tmin;
+        else if (Tmax == x)
+            return x;
+        else if (empty && Tmax > x)
+            return Tmax;
+        else if (x > Tmax)
+            return -1;
+        else if (!empty) {
+            int childIndex = x / childsize;
             int next = x % childsize;
-            
-            if(childs[childIndex].Tmax>=next) {
-            	return childs[childIndex].lower_bound(next)+childsize*childIndex;
+
+            if (childs[childIndex].Tmax >= next) {
+                return childs[childIndex].lower_bound(next) + childsize * childIndex;
             }
-            
+
             else {
-            	int index=summary.lower_bound(childIndex);
-            	if(index!=-1) {
-            		return childsize*index+childs[index].Tmin;
-            	}
+                int index = summary->lower_bound(childIndex);
+                if (index != -1) {
+                    return childsize * index + childs[index].Tmin;
+                }
             }
-		 }
-		 
-		 return -1;
-	 }
-    
-     void insertSize(int x) {
-		 if(!find(x)) {
-			 size++;
-			 insert(x);
-		 }
-		 
-	 }
-    
+        }
+
+        return -1;
+    }
+
+    void insertSize(int x) {
+        if (!find(x)) {
+            size++;
+            insert(x);
+        }
+
+    }
+
     void eraseSize(int x) {
-		 if(find(x)) {
-			 size--;
-			 erase(x);
-		 }
-		 
-	 }
+        if (find(x)) {
+            size--;
+            erase(x);
+        }
+
+    }
 
     void insert(int x) {
         //Baum leer
@@ -169,7 +169,7 @@ long long rand(long long a, long long b) {
 }
 
 int main() {
-    
+
 
     return 0;
 }
