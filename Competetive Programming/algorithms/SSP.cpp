@@ -41,7 +41,7 @@ struct VanEmdeBoasTree {
             Tmax = Tmin = x;
             return;
         }
-        // wichtig nur Element größer als Tmin werden propagiert nach unten, deswegen
+        // wichtig nur Element grÃ¶ÃŸer als Tmin werden propagiert nach unten, deswegen
         //hier swap
         else if (x < Tmin) {
             swap(x, Tmin);
@@ -100,7 +100,7 @@ struct VanEmdeBoasTree {
                 summary->erase(childIndex);
 
             if (x == Tmax) {
-                if (childEmpty)
+                 if (summary->Tmax < summary->Tmin)
                     Tmax = Tmin;
                 else {
                     int index = summary->Tmax;
