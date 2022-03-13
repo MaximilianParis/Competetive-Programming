@@ -145,7 +145,7 @@ struct VanEmdeBoasTree {
                 summary->erase(childIndex);
 
             if (x == Tmax) {
-                if (childEmpty)
+               if (summary->Tmax < summary->Tmin)
                     Tmax = Tmin;
                 else {
                     int index = summary->Tmax;
