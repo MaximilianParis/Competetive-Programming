@@ -5,6 +5,7 @@ using namespace std;
 //insert:O(sqrt(w)) amortized
 //delete:O(sqrt(w)) amortized
 //lower_bound,predecessor: O(sqrt(w))
+//w is log of max Element which can be inserted, this is (2^w)-1
 typedef unsigned long long ull;
 int n, k, l;
 
