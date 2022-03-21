@@ -6,6 +6,7 @@ using namespace std;
 //delete:O(sqrt(w)) amortized
 //lower_bound,predecessor: O(sqrt(w))
 //w is log of max Element which can be inserted, this is (2^w)-1
+//Memory is O(n*sqrt(w)), n is number of elements in the tree
 typedef unsigned long long ull;
 int n, k, l;
 
