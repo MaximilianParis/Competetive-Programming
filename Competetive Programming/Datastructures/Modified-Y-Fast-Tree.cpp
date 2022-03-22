@@ -7,6 +7,7 @@ using namespace std;
 //lower_bound,predecessor: O(sqrt(w))
 //w is log of max Element which can be inserted, this is (2^w)-1
 //Memory is O(n*sqrt(w)), n is number of elements in the tree
+//only use a w which has a integer square root
 typedef unsigned long long ull;
 int n, k, l;
 
@@ -377,20 +378,19 @@ struct YFastTrie {
     int mxGroupSize;
     ull maxBit;
     int sqrtW;
-    int potenz;
     ull maskSqrt;
     vector<ull> sqrtPos;
+    vector<ull> tem;
     YFastTrie(int w) {
         sqrtW = sqrt(w);
-        potenz = 1 << (sqrtW - 1);
-        maskSqrt = (potenz << 1) - 1;
-        mnGroupSize = max(2, potenz / 4);
-        mxGroupSize = 2 * potenz;
+        maskSqrt = (1 << (sqrtW)) - 1;
+        mnGroupSize = max((ull)2, (maskSqrt + 1) / 4);
+        mxGroupSize = 2 * (maskSqrt + 1);
         this->w = w;
         root = new struct node();
         maxBit = ((ull)1) << (w - 1);
         sqrtPos = vector<ull>(sqrtW);
-
+        tem = vector<ull>(mxGroupSize + mnGroupSize - 1);
     }
 
 
@@ -636,7 +636,6 @@ struct YFastTrie {
     }
     tuple< AVL_Tree*, AVL_Tree*, ull, ull> splittTree(AVL_Tree* tree) {
         int size = tree->root->size;
-        vector<ull> tem(size);
         int i = 0;
         int* index = &i;
         fill(tem, index, tree->root);
@@ -645,10 +644,10 @@ struct YFastTrie {
         AVL_Tree* treeX1 = new struct AVL_Tree(tem[halfHalf]);
         AVL_Tree* treeX2 = new struct AVL_Tree(tem[halfHalf + half]);
 
-        construct(treeX1, treeX1->root, 0, halfHalf - 1, true, tem);
-        construct(treeX1, treeX1->root, halfHalf + 1, half - 1, false, tem);
-        construct(treeX2, treeX2->root, half, half + halfHalf - 1, true, tem);
-        construct(treeX2, treeX2->root, half + halfHalf + 1, size - 1, false, tem);
+        construct(treeX1, treeX1->root, 0, halfHalf - 1, true);
+        construct(treeX1, treeX1->root, halfHalf + 1, half - 1, false);
+        construct(treeX2, treeX2->root, half, half + halfHalf - 1, true);
+        construct(treeX2, treeX2->root, half + halfHalf + 1, size - 1, false);
 
         treeX2->updateSize(treeX2->root);
         treeX2->updateBalance(treeX2->root);
@@ -710,20 +709,19 @@ struct YFastTrie {
         AVL_Tree* treeX1 = x1->tree;
         AVL_Tree* treeX2 = x2->tree;
         int size = treeX1->root->size + treeX2->root->size;
-        vector<ull> tem(size);
         int i = 0;
         int* index = &i;
         fill(tem, index, treeX1->root);
         fill(tem, index, treeX2->root);
         int half = size / 2;
         AVL_Tree* ans = new struct AVL_Tree(tem[half]);
-        construct(ans, ans->root, 0, half - 1, true, tem);
-        construct(ans, ans->root, half + 1, size - 1, false, tem);
+        construct(ans, ans->root, 0, half - 1, true);
+        construct(ans, ans->root, half + 1, size - 1, false);
         ans->updateSize(ans->root);
         ans->updateBalance(ans->root);
         return ans;
     }
-    void construct(AVL_Tree* ans, AVLNode* parent, int l, int r, bool left, vector<ull>& tem) {
+    void construct(AVL_Tree* ans, AVLNode* parent, int l, int r, bool left) {
         if (r >= l) {
             int mid = l + (r - l) / 2;
             AVLNode* curr = new struct AVLNode();
@@ -733,8 +731,8 @@ struct YFastTrie {
                 parent->left = curr;
             else
                 parent->right = curr;
-            construct(ans, curr, l, mid - 1, true, tem);
-            construct(ans, curr, mid + 1, r, false, tem);
+            construct(ans, curr, l, mid - 1, true);
+            construct(ans, curr, mid + 1, r, false);
             ans->updateSize(curr);
             ans->updateBalance(curr);
 
