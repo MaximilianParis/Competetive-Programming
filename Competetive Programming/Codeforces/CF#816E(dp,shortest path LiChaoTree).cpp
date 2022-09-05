@@ -2,7 +2,7 @@
 using namespace std;
 //Author: Max Paris
 //Problem Link:https://codeforces.com/problemset/problem/1715/E
-//O(k*(m*log(m+n)+n*Log(n))
+//O(k*(m*log(m+n)+n*Log(n)))
 typedef long long ll;
 int n, k, l, m;
 
